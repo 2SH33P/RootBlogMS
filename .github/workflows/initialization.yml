@@ -1,0 +1,26 @@
+name: Root folder initialization
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  Initialization:
+    name: Check out
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone hexo-starter
+      uses: actions/checkout@v4
+      with: 
+        repository: 'hexojs/hexo-starter'
+        ref: 'master'
+        token: '${{ github.token }}'
+    - name: Push
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: .
+        token: ${{ secrets.GH_TOKEN }}
+        branch: main
+        repository-name: ${{ secrets.ROOT }}

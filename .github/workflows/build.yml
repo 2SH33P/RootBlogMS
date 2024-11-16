@@ -1,0 +1,50 @@
+name: Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  Build:
+    name: Build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - name: Check out
+      uses: actions/checkout@v4
+      with: 
+        repository: '${{ secrets.ROOT }}'
+        ref: 'main'
+        token: ${{ secrets.GH_TOKEN }}
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: "12.x"
+
+    - name: Install Hexo
+      run: npm install hexo-cli -g
+      
+    - name: Build
+      run: |
+        npm install
+        chmod +x i.sh
+        ./i.sh
+        hexo clean
+        hexo g
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+         path: 'public'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

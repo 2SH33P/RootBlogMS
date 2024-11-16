@@ -1,0 +1,28 @@
+name: Theme install
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  Initialization:
+    name: Check out
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone
+      uses: actions/checkout@v4
+      with: 
+        repository: '${{ secrets.ROOT }}'
+        ref: 'main'
+        token: ${{ secrets.GH_TOKEN }}
+    - name: Install theme
+      run: ${{ secrets.SH }}
+    - name: Push
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: .
+        token: ${{ secrets.GH_TOKEN }}
+        branch: main
+        repository-name: ${{ secrets.ROOT }}
